@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420">
+  <defs><marker id="p" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#334155"/></marker></defs>
+  <rect width="640" height="420" fill="#ffffff"/>
+  <text x="320" y="34" text-anchor="middle" font-family="Arial" font-size="20" font-weight="700" fill="#0F172A">Jaring-jaring Makanan Sawah</text>
+  <g font-family="Arial" font-size="17" font-weight="700" text-anchor="middle">
+    <rect x="250" y="340" width="140" height="44" rx="10" fill="#DCFCE7" stroke="#15803D" stroke-width="2"/><text x="320" y="368" fill="#14532D">Padi</text>
+    <rect x="80" y="240" width="140" height="44" rx="10" fill="#FEF9C3" stroke="#A16207" stroke-width="2"/><text x="150" y="268" fill="#713F12">Belalang</text>
+    <rect x="420" y="240" width="140" height="44" rx="10" fill="#FEF9C3" stroke="#A16207" stroke-width="2"/><text x="490" y="268" fill="#713F12">Tikus</text>
+    <rect x="80" y="140" width="140" height="44" rx="10" fill="#FFEDD5" stroke="#C2410C" stroke-width="2"/><text x="150" y="168" fill="#7C2D12">Katak</text>
+    <rect x="420" y="140" width="140" height="44" rx="10" fill="#FFEDD5" stroke="#C2410C" stroke-width="2"/><text x="490" y="168" fill="#7C2D12">Ular</text>
+    <rect x="250" y="56" width="140" height="44" rx="10" fill="#FEE2E2" stroke="#B91C1C" stroke-width="2"/><text x="320" y="84" fill="#7F1D1D">Elang</text>
+  </g>
+  <g stroke="#334155" stroke-width="2.5" marker-end="url(#p)" fill="none">
+    <line x1="290" y1="340" x2="185" y2="286"/>
+    <line x1="350" y1="340" x2="455" y2="286"/>
+    <line x1="150" y1="240" x2="150" y2="188"/>
+    <line x1="490" y1="240" x2="490" y2="188"/>
+    <line x1="220" y1="162" x2="418" y2="162"/>
+    <line x1="470" y1="140" x2="365" y2="102"/>
+    <line x1="430" y1="250" x2="360" y2="102"/>
+  </g>
+</svg>

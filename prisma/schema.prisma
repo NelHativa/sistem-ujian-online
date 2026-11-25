@@ -1,0 +1,246 @@
+// Skema database demo Sistem Ujian Online SMAS Bina Taruna.
+// Memakai SQLite untuk kemudahan demo lokal; cukup ganti provider ke "postgresql" untuk Fase Pilot.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Pengaturan {
+  kunci String @id
+  nilai String
+}
+
+model GrupKelas {
+  id     Int         @id @default(autoincrement())
+  nama   String      @unique
+  kelas  Kelas[]
+  admins AdminGrup[]
+}
+
+model Kelas {
+  id        Int         @id @default(autoincrement())
+  nama      String      @unique // "XI IPA 1"
+  tingkat   String // X | XI | XII
+  jurusan   String // IPA | IPS
+  nomor     Int
+  grupId    Int
+  grup      GrupKelas   @relation(fields: [grupId], references: [id])
+  siswa     Siswa[]
+  penugasan Penugasan[]
+  sesi      SesiKelas[]
+}
+
+model Siswa {
+  id           Int           @id @default(autoincrement())
+  nis          String        @unique
+  nisn         String?       @unique
+  nama         String
+  tglLahir     String // YYYYMMDD
+  jk           String // L | P
+  noUrut       Int
+  kelasId      Int
+  kelas        Kelas         @relation(fields: [kelasId], references: [id])
+  passwordHash String
+  peserta      PesertaSesi[]
+}
+
+model Guru {
+  id           Int         @id @default(autoincrement())
+  nomorInduk   String      @unique
+  jenisNomor   String // NUPTK | NRG | NPK | INTERNAL
+  nama         String
+  tglLahir     String
+  passwordHash String
+  penugasan    Penugasan[]
+  paket        PaketSoal[]
+}
+
+model Admin {
+  id           Int         @id @default(autoincrement())
+  username     String      @unique
+  nama         String
+  peran        String // UTAMA | GRUP
+  passwordHash String
+  grup         AdminGrup[]
+}
+
+model AdminGrup {
+  adminId Int
+  grupId  Int
+  admin   Admin     @relation(fields: [adminId], references: [id])
+  grup    GrupKelas @relation(fields: [grupId], references: [id])
+
+  @@id([adminId, grupId])
+}
+
+model Mapel {
+  id        Int         @id @default(autoincrement())
+  nama      String      @unique
+  penugasan Penugasan[]
+  paket     PaketSoal[]
+}
+
+model Penugasan {
+  id      Int   @id @default(autoincrement())
+  guruId  Int
+  mapelId Int
+  kelasId Int
+  guru    Guru  @relation(fields: [guruId], references: [id])
+  mapel   Mapel @relation(fields: [mapelId], references: [id])
+  kelas   Kelas @relation(fields: [kelasId], references: [id])
+
+  @@unique([guruId, mapelId, kelasId])
+}
+
+model PaketSoal {
+  id          Int         @id @default(autoincrement())
+  judul       String
+  mapelId     Int
+  tingkat     String
+  jenisUjian  String // PTS | PAS | PAT | US
+  guruId      Int
+  status      String      @default("DRAF") // DRAF | FINAL
+  finalAt     DateTime?
+  createdAt   DateTime    @default(now())
+  mapel       Mapel       @relation(fields: [mapelId], references: [id])
+  guru        Guru        @relation(fields: [guruId], references: [id])
+  soal        Soal[]
+  sesi        SesiUjian[]
+}
+
+model Soal {
+  id       Int       @id @default(autoincrement())
+  paketId  Int
+  nomor    Int
+  tipe     String // PG | PGK | BS | ESAI
+  teks     String
+  gambar   String    @default("[]") // JSON array nama file
+  bobot    Int       @default(1)
+  hitungan Boolean   @default(false)
+  pedoman  String?
+  paket    PaketSoal @relation(fields: [paketId], references: [id], onDelete: Cascade)
+  opsi     Opsi[]
+  jawaban  Jawaban[]
+}
+
+model Opsi {
+  id     Int     @id @default(autoincrement())
+  soalId Int
+  teks   String
+  urutan Int
+  benar  Boolean @default(false)
+  soal   Soal    @relation(fields: [soalId], references: [id], onDelete: Cascade)
+}
+
+model SesiUjian {
+  id                  Int           @id @default(autoincrement())
+  paketId             Int
+  tipe                String        @default("REGULER") // REGULER | SUSULAN
+  mulai               DateTime
+  selesai             DateTime
+  batasTerlambatMenit Int           @default(10)
+  token               String
+  ditutupAt           DateTime?
+  sesiIndukId         Int?
+  createdAt           DateTime      @default(now())
+  paket               PaketSoal     @relation(fields: [paketId], references: [id])
+  kelas               SesiKelas[]
+  peserta             PesertaSesi[]
+}
+
+model SesiKelas {
+  sesiId  Int
+  kelasId Int
+  sesi    SesiUjian @relation(fields: [sesiId], references: [id], onDelete: Cascade)
+  kelas   Kelas     @relation(fields: [kelasId], references: [id])
+
+  @@id([sesiId, kelasId])
+}
+
+model PesertaSesi {
+  id                 Int           @id @default(autoincrement())
+  sesiId             Int
+  siswaId            Int
+  kehadiran          String        @default("BELUM") // BELUM | HADIR | TERLAMBAT | TIDAK_HADIR
+  jamMasuk           DateTime?
+  jamKumpul          DateTime?
+  caraKumpul         String? // MANUAL | OTOMATIS | PAKSA_ADMIN
+  seed               Int
+  pelanggaran        Int           @default(0)
+  durasiKeluarDetik  Int           @default(0)
+  sirine             Boolean       @default(false)
+  sedangKeluarSejak  DateTime?
+  tokenLoginId       String? // id SesiLogin saat token terakhir dimasukkan dengan benar
+  lastSeen           DateTime?
+  perangkat          String?
+  sesi               SesiUjian     @relation(fields: [sesiId], references: [id], onDelete: Cascade)
+  siswa              Siswa         @relation(fields: [siswaId], references: [id])
+  jawaban            Jawaban[]
+  nilai              Nilai?
+
+  @@unique([sesiId, siswaId])
+}
+
+model Jawaban {
+  id        Int         @id @default(autoincrement())
+  pesertaId Int
+  soalId    Int
+  isi       String // JSON: number (opsiId) | number[] | string
+  ragu      Boolean     @default(false)
+  updatedAt DateTime    @updatedAt
+  peserta   PesertaSesi @relation(fields: [pesertaId], references: [id], onDelete: Cascade)
+  soal      Soal        @relation(fields: [soalId], references: [id], onDelete: Cascade)
+
+  @@unique([pesertaId, soalId])
+}
+
+model Nilai {
+  id         Int         @id @default(autoincrement())
+  pesertaId  Int         @unique
+  poinEsai   String      @default("{}") // JSON { soalId: poin }
+  nilaiAkhir Int?
+  catatan    String?
+  diisiOleh  String?
+  updatedAt  DateTime    @updatedAt
+  peserta    PesertaSesi @relation(fields: [pesertaId], references: [id], onDelete: Cascade)
+}
+
+model LogAktivitas {
+  id        Int      @id @default(autoincrement())
+  aktorTipe String // SISWA | GURU | ADMIN | SISTEM | ANONIM
+  aktorId   String?
+  pesertaId Int?
+  sesiId    Int?
+  kode      String
+  data      String   @default("{}")
+  waktu     DateTime @default(now())
+  ip        String?
+  perangkat String?
+
+  @@index([pesertaId])
+  @@index([sesiId])
+}
+
+model SesiLogin {
+  id        String   @id
+  akunTipe  String // SISWA | GURU | ADMIN
+  akunId    Int
+  perangkat String?
+  ip        String?
+  createdAt DateTime @default(now())
+  lastSeen  DateTime @default(now())
+  aktif     Boolean  @default(true)
+
+  @@index([akunTipe, akunId])
+}
+
+model Captcha {
+  id        String   @id
+  jawaban   String
+  expiresAt DateTime
+}

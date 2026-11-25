@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --navy: #1e3a8a;
+  --navy-dark: #0f2557;
+  --emas: #d4a017;
+  --bg-page: #f8fafc;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-2: #475569;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    background: var(--bg-page);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply font-sans;
+    background: var(--bg-page);
+    min-height: 100dvh;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--navy);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .kartu {
+    @apply rounded-2xl border border-slate-200 bg-white;
+  }
+  .btn {
+    @apply inline-flex min-h-[44px] select-none items-center justify-center gap-2 rounded-xl px-4 font-heading text-sm font-semibold;
+    transition: transform 120ms var(--ease), background-color 120ms var(--ease), border-color 120ms var(--ease), color 120ms var(--ease);
+  }
+  .btn:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .btn:disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  .btn-primer {
+    @apply btn bg-navy text-white hover:bg-navy-dark;
+  }
+  .btn-emas {
+    @apply btn bg-emas text-slate-900 hover:brightness-95;
+  }
+  .btn-garis {
+    @apply btn border border-slate-300 bg-white text-slate-800 hover:border-navy hover:text-navy;
+  }
+  .btn-bahaya {
+    @apply btn bg-rose-600 text-white hover:bg-rose-700;
+  }
+  .btn-kecil {
+    @apply min-h-[36px] rounded-lg px-3 text-xs;
+  }
+  .input {
+    @apply min-h-[44px] w-full rounded-xl border border-slate-300 bg-white px-3 text-[15px] text-slate-900 outline-none placeholder:text-slate-400 focus:border-navy focus:ring-2 focus:ring-navy/15;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-slate-700;
+  }
+  .lencana {
+    @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  .tabel {
+    @apply w-full border-collapse text-sm;
+  }
+  .tabel th {
+    @apply whitespace-nowrap border-b border-slate-200 bg-slate-50 px-3 py-2.5 text-left font-heading text-xs font-semibold uppercase tracking-wide text-slate-500;
+  }
+  .tabel td {
+    @apply border-b border-slate-100 px-3 py-2.5 align-middle;
+  }
+}
+
+.angka {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Halaman ujian: kunci seleksi & salin (AMAN-02) */
+.mode-ujian,
+.mode-ujian * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.mode-ujian textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+.mode-ujian img {
+  -webkit-user-drag: none;
+  pointer-events: auto;
+}
+
+@media print {
+  .mode-ujian {
+    display: none !important;
+  }
+  body.ujian-aktif::after {
+    content: 'Mencetak halaman ujian tidak diizinkan.';
+    display: block;
+    padding: 40px;
+    font-size: 20px;
+  }
+}
+
+@keyframes masuk {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+[data-masuk] {
+  animation: masuk 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes kedip-merah {
+  0%, 100% { background-color: rgb(185 28 28); }
+  50% { background-color: rgb(127 29 29); }
+}
+.kedip-merah {
+  animation: kedip-merah 0.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
