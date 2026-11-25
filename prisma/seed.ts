@@ -130,6 +130,8 @@ async function main() {
     toleransiEditMenit: process.env.TOLERANSI_EDIT_MENIT ?? '1',
     toleransiKumpulMenit: process.env.TOLERANSI_KUMPUL_MENIT ?? '15',
     batasTerlambatDefault: '10',
+    // Fitur ganti password dimatikan untuk demo; Admin Utama dapat menyalakannya di menu Pengaturan.
+    gantiPasswordAktif: '0',
   };
   for (const [kunci, nilai] of Object.entries(pengaturan)) await prisma.pengaturan.create({ data: { kunci, nilai } });
 

@@ -83,6 +83,8 @@ Sudah dibangun: AUTH-01..07 dan 09 (captcha gambar buatan server sendiri), satu 
 
 Disederhanakan atau ditunda sesuai dokumen MVP: data master hanya dapat dilihat (diisi lewat seed), tanpa halaman kelola admin, tanpa import Excel/Dapodik, tanpa salin/import paket, tanpa rekap semua mapel, dan tanpa ekspor log. Skala 1.000 pengguna, cloud, dan backup masuk Fase Pilot.
 
+**Ganti password (mati secara default):** Admin Utama dapat menyalakannya di menu **Pengaturan**. Saat aktif, siswa, guru, dan admin dapat mengganti password sendiri lewat tombol di header (aturan satu-satunya: minimal 8 karakter). Bila siswa atau guru lupa password, admin dapat menekan **Reset password** di Data master, dan password kembali ke tanggal lahir (YYYYMMDD). Admin Grup hanya dapat mereset siswa di grupnya, dan password guru hanya dapat direset Admin Utama. Semua perubahan tercatat di log. Setelah `demo:reset`, fitur kembali mati.
+
 Catatan perilaku:
 - Satu sesi aktif berlaku ketat untuk **siswa**. Untuk guru dan admin, login terbaru menggantikan sesi sebelumnya agar presenter mudah berpindah perangkat.
 - Pelanggaran dihitung dari `visibilitychange` dan `blur` jendela. Klik di address bar juga terhitung karena fokus meninggalkan halaman.

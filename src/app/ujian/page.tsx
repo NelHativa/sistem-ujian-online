@@ -1,5 +1,6 @@
 import { CalendarClock, CheckCircle2, ChevronRight, Clock, Lock } from 'lucide-react';
 import Link from 'next/link';
+import { TombolGantiPassword } from '@/components/GantiPassword';
 import { HitungMundur } from '@/components/HitungMundur';
 import { Lambang } from '@/components/Logo';
 import { TombolKeluar } from '@/components/TombolKeluar';
@@ -36,7 +37,10 @@ export default async function BerandaSiswa() {
               </div>
             </div>
           </div>
-          <TombolKeluar peran="SISWA" terang />
+          <div className="flex items-center gap-1">
+            {t.gantiPasswordAktif && <TombolGantiPassword peran="SISWA" terang />}
+            <TombolKeluar peran="SISWA" terang />
+          </div>
         </div>
         <div className="mx-auto max-w-3xl px-4 pb-6 pt-2">
           <p className="text-sm text-blue-200">Selamat datang,</p>

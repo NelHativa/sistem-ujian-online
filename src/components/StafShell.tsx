@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { TombolGantiPassword } from './GantiPassword';
 import { Lambang } from './Logo';
 import { TombolKeluar } from './TombolKeluar';
 
@@ -7,12 +8,15 @@ export function StafShell({
   nama,
   keterangan,
   menu,
+  gantiPassword = false,
   children,
 }: {
   peran: 'GURU' | 'ADMIN';
   nama: string;
   keterangan: string;
   menu: { href: string; label: string }[];
+  /** Tampilkan tombol ganti password (mengikuti pengaturan Admin Utama). */
+  gantiPassword?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -31,6 +35,7 @@ export function StafShell({
               <div className="text-sm font-semibold">{nama}</div>
               <div className="text-xs text-blue-200">{keterangan}</div>
             </div>
+            {gantiPassword && <TombolGantiPassword peran={peran} terang />}
             <TombolKeluar peran={peran} terang />
           </div>
         </div>

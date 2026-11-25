@@ -11,7 +11,7 @@ export default async function Pengaturan() {
   return (
     <>
       <JudulHalaman judul="Pengaturan global" sub={`${t.namaSekolah} · Tahun ajaran ${t.tahunAjaran} · Semester ${t.semester}`} />
-      <FormPengaturan edit={t.toleransiEditMenit} kumpul={t.toleransiKumpulMenit} />
+      <FormPengaturan edit={t.toleransiEditMenit} kumpul={t.toleransiKumpulMenit} gantiPasswordAktif={t.gantiPasswordAktif} />
     </>
   );
 }

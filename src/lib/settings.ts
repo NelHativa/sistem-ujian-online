@@ -7,6 +7,8 @@ export type Pengaturan = {
   toleransiEditMenit: number;
   toleransiKumpulMenit: number;
   batasTerlambatDefault: number;
+  /** Fitur ganti password oleh siswa/guru/admin dan reset password oleh admin. */
+  gantiPasswordAktif: boolean;
 };
 
 const DEFAULTS: Pengaturan = {
@@ -16,6 +18,7 @@ const DEFAULTS: Pengaturan = {
   toleransiEditMenit: 1,
   toleransiKumpulMenit: 15,
   batasTerlambatDefault: 10,
+  gantiPasswordAktif: false,
 };
 
 export async function getPengaturan(): Promise<Pengaturan> {
@@ -28,13 +31,15 @@ export async function getPengaturan(): Promise<Pengaturan> {
     toleransiEditMenit: Number(map.toleransiEditMenit ?? DEFAULTS.toleransiEditMenit),
     toleransiKumpulMenit: Number(map.toleransiKumpulMenit ?? DEFAULTS.toleransiKumpulMenit),
     batasTerlambatDefault: Number(map.batasTerlambatDefault ?? DEFAULTS.batasTerlambatDefault),
+    gantiPasswordAktif: map.gantiPasswordAktif != null ? map.gantiPasswordAktif === '1' : DEFAULTS.gantiPasswordAktif,
   };
 }
 
-export async function setPengaturan(kunci: keyof Pengaturan, nilai: string | number) {
+export async function setPengaturan(kunci: keyof Pengaturan, nilai: string | number | boolean) {
+  const teks = typeof nilai === 'boolean' ? (nilai ? '1' : '0') : String(nilai);
   await prisma.pengaturan.upsert({
     where: { kunci },
-    create: { kunci, nilai: String(nilai) },
-    update: { nilai: String(nilai) },
+    create: { kunci, nilai: teks },
+    update: { nilai: teks },
   });
 }

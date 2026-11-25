@@ -63,6 +63,8 @@ export const LABEL_LOG: Record<string, string> = {
   PAKET_FINAL: 'Paket soal difinalkan',
   PAKET_DRAF: 'Status final dibatalkan',
   PENGATURAN_DIUBAH: 'Pengaturan diubah',
+  PASSWORD_DIUBAH: 'Password diubah oleh pemilik akun',
+  PASSWORD_DIRESET: 'Password direset admin ke tanggal lahir',
 };
 
 export const KODE_PELANGGARAN = new Set(['KELUAR_TAB', 'PRINTSCREEN_TERDETEKSI', 'SIRINE_DIBUNYIKAN', 'KELUAR_LAYAR_PENUH']);

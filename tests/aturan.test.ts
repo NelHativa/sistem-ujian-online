@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { acakDeterministik } from '../src/lib/acak';
+import { validasiPasswordBaru } from '../src/lib/password';
 import { cekBenar, hitungNilai, validasiNilaiAkhir } from '../src/lib/penilaian';
 import { faseSesi, statusKehadiran } from '../src/lib/waktu';
 
@@ -53,5 +54,15 @@ describe('pengacakan opsi (SOAL-10)', () => {
     expect(acakDeterministik(o, 42, 7)).toEqual(acakDeterministik(o, 42, 7));
     const hasil = new Set(Array.from({ length: 10 }, (_, i) => acakDeterministik(o, i * 1000 + 1, 7).join()));
     expect(hasil.size).toBeGreaterThan(3);
+  });
+});
+
+describe('password baru', () => {
+  it('cukup minimal 8 karakter, tanpa syarat campuran huruf/angka', () => {
+    expect(validasiPasswordBaru('1234567')).not.toBeNull();
+    expect(validasiPasswordBaru('')).not.toBeNull();
+    expect(validasiPasswordBaru('12345678')).toBeNull();
+    expect(validasiPasswordBaru('abcdefgh')).toBeNull();
+    expect(validasiPasswordBaru('ab cd ef')).toBeNull();
   });
 });

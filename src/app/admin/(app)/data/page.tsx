@@ -1,9 +1,13 @@
 import { JudulHalaman } from '@/components/StafShell';
+import { TombolResetPassword } from '@/components/admin/TombolResetPassword';
 import { wajibAdmin } from '@/lib/auth';
 import { prisma } from '@/lib/db';
+import { getPengaturan } from '@/lib/settings';
 
 export default async function DataMaster({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
-  const { grupIds } = await wajibAdmin();
+  const { admin, grupIds } = await wajibAdmin();
+  const { gantiPasswordAktif } = await getPengaturan();
+  const resetGuru = gantiPasswordAktif && admin.peran === 'UTAMA';
   const tab = (await searchParams).tab ?? 'siswa';
   const kelas = await prisma.kelas.findMany({ where: { grupId: { in: grupIds } }, include: { grup: true, _count: { select: { siswa: true } } }, orderBy: { nama: 'asc' } });
   const siswa = await prisma.siswa.findMany({ where: { kelasId: { in: kelas.map((k) => k.id) } }, include: { kelas: true }, orderBy: [{ kelasId: 'asc' }, { noUrut: 'asc' }] });
@@ -35,6 +39,7 @@ export default async function DataMaster({ searchParams }: { searchParams: Promi
                 <th>Nama</th>
                 <th>L/P</th>
                 <th>Tgl lahir</th>
+                {gantiPasswordAktif && <th>Password</th>}
               </tr>
             </thead>
             <tbody>
@@ -47,6 +52,11 @@ export default async function DataMaster({ searchParams }: { searchParams: Promi
                   <td className="font-semibold">{s.nama}</td>
                   <td>{s.jk}</td>
                   <td className="font-mono text-sm">{`${s.tglLahir.slice(6)}-${s.tglLahir.slice(4, 6)}-${s.tglLahir.slice(0, 4)}`}</td>
+                  {gantiPasswordAktif && (
+                    <td>
+                      <TombolResetPassword tipe="SISWA" id={s.id} nama={s.nama} />
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -60,6 +70,7 @@ export default async function DataMaster({ searchParams }: { searchParams: Promi
                 <th>Jenis nomor</th>
                 <th>Nomor induk</th>
                 <th>Penugasan</th>
+                {resetGuru && <th>Password</th>}
               </tr>
             </thead>
             <tbody>
@@ -69,6 +80,11 @@ export default async function DataMaster({ searchParams }: { searchParams: Promi
                   <td>{g.jenisNomor}</td>
                   <td className="font-mono text-sm">{g.nomorInduk}</td>
                   <td className="text-sm">{g.penugasan.map((p) => `${p.mapel.nama} ${p.kelas.nama}`).join(', ')}</td>
+                  {resetGuru && (
+                    <td>
+                      <TombolResetPassword tipe="GURU" id={g.id} nama={g.nama} />
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
