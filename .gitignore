@@ -11,3 +11,4 @@ data/uploads/*
 !data/uploads/.gitkeep
 certificates
 certs/*.pem
+.claude/settings.local.json
